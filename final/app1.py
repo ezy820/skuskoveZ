@@ -6,7 +6,7 @@ import math
 import random
 import serial
 
-ser = serial.Serial('/dev/ttyS3',9600)
+ser = serial.Serial('/dev/ttyS1',9600)
 ser.baurate = 9600
 
 async_mode = None
