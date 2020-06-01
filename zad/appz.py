@@ -19,49 +19,45 @@ ser.baudrate=9600
 
 def background_thread(args):
     count = 0    
-    dataList = []          
+    i = 0          
     while True:
-        read_ser=ser.readline()
-        prem=read_ser.split(',')
+        
         if args:
           A = dict(args).get('A')
           btnV = dict(args).get('btn_value')
           sliderV = dict(args).get('slider_value')
         else:
-          A = 1
+          A = 0
+          A = int(A)
           btnV = 'null'
-          sliderV = 0 
+          sliderV = 0
+          read_ser=ser.readline()
+          prem=read_ser.split(',')
+          ser.write(str(A))
+          t=time.time()
         #print A
         #print args  
-        socketio.sleep(2)
-        count += 1
-        
-        dataDict = {
-          "t": time.time(),
-          "x": prem[0],
-          "y": prem[1]}
-        dataList.append(dataDict)
-        if len(dataList)>0:
-          print str(dataList)
-          print str(dataList).replace("'", "\"")      
-        socketio.emit('my_response',
-                      {'data': prem[0], 'data2': prem[1], 'count': count},
-                      namespace='/test')  
+          socketio.sleep(0.5)
+          
+        if A != 0:
+            count += 1
+            print(prem)     
+            socketio.emit('my_response',
+                      {'data': prem[0], 'data2': prem[1], 'count': count, 'time': t},
+                      namespace='/test')
+        else
+            print(t)
 
 @app.route('/')
 def index():
-    return render_template('index.html', async_mode=socketio.async_mode)
-       
-@app.route('/graphlive', methods=['GET', 'POST'])
-def graphlive():
-    return render_template('graphlive.html', async_mode=socketio.async_mode)
+    return render_template('index1.html', async_mode=socketio.async_mode)
       
 @socketio.on('my_event', namespace='/test')
 def test_message(message):   
-#    session['receive_count'] = session.get('receive_count', 0) + 1 
+    session['receive_count'] = session.get('receive_count', 0) + 1 
     session['A'] = message['value']    
-#    emit('my_response',
-#         {'data': message['value'], 'count': session['receive_count']})
+    emit('my_response',
+         {'data': message['value'], 'count': session['receive_count'], 'ampl':1})
  
 @socketio.on('disconnect_request', namespace='/test')
 def disconnect_request():
@@ -76,7 +72,7 @@ def test_connect():
     with thread_lock:
         if thread is None:
             thread = socketio.start_background_task(target=background_thread, args=session._get_current_object())
-#    emit('my_response', {'data': 'Connected', 'count': 0})
+    emit('my_response', {'data': 'Connected', 'count': 0})
 
 @socketio.on('click_event', namespace='/test')
 def db_message(message):   
