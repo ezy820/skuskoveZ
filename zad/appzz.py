@@ -37,7 +37,6 @@ def background_thread(args):
         socketio.sleep(0.5)
         count += 1
         dataCounter +=1
-        
         if dict(args).get('A') is not None:
             A = dict(args).get('A')
             A = int(A)
@@ -82,14 +81,9 @@ def graph():
 @app.route('/db', methods=['GET', 'POST'])
 def db():
     db = MySQLdb.connect(host=myhost,user=myuser,passwd=mypasswd,db=mydb)
-#   cursor = db.cursor()
-#   cursor.execute('''SELECT  hodnoty FROM  graph WHERE id=6''')
-#   rv = cursor.fetchall()
-#   return str(rv)
     print request.form["data"]
     fuj = str(request.form["data"])
     cursor = db.cursor()
-
     cursor.execute("INSERT INTO zadanie (hodnoty) VALUES (%s)", [fuj])
     db.commit()
     fo = open("static/test.txt","a+")
@@ -102,7 +96,7 @@ def dbdata(num):
   db = MySQLdb.connect(host=myhost,user=myuser,passwd=mypasswd,db=mydb)
   cursor = db.cursor()
   print num
-  cursor.execute("SELECT hodnoty FROM  graph WHERE id=%s", num)
+  cursor.execute("SELECT hodnoty FROM zadanie WHERE id=%s", num)
   rv = cursor.fetchone()
   return str(rv[0])
 
