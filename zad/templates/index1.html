@@ -31,29 +31,17 @@ $(document).ready(function() {
         maxValue: 6,
         majorTicks: [
             "-6",
-
             "-5",
-
             "-4",
-
             "-3",
-
             "-2",
-
             "-1",
-
             "0",
-
             "1",
-
             "2",
-
             "3",
-
             "4",
-
             "5",
-
             "6"
         ],
         minorTicks: 2,
@@ -74,8 +62,50 @@ $(document).ready(function() {
         animationDuration: 1000,
         animationRule: "linear"
     });
+    
+    var gauge2 = new RadialGauge({
+        renderTo: 'canvasID2',
+        width: 300,
+        height: 300,
+        units: "U",
+        minValue: 0,
+        maxValue: 10,
+        majorTicks: [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+        ],
+        minorTicks: 2,
+        strokeTicks: true,
+        highlights: [{
+            "from": 9,
+            "to": 10,
+            "color": "rgba(200, 50, 50, .75)"
+        }],
+        colorPlate: "#fff",
+        borderShadowWidth: 0,
+        borders: false,
+        needleType: "arrow",
+        needleWidth: 2,
+        needleCircleSize: 7,
+        needleCircleOuter: true,
+        needleCircleInner: false,
+        animationDuration: 1000,
+        animationRule: "linear"
+    });
+    
     gauge.value = "0";
+    gauge2.value = "0";
     gauge.draw();
+    gauge2.draw();
 
     $('form#emit').hide();
     $('form#emit').submit(function(event) {
@@ -107,6 +137,7 @@ $(document).ready(function() {
                 } else {
                     $('#log').append('Received #' + msg.count + ': Signal1:' + msg.data + ', Signal2:' + msg.data2 + '<br>').html();
                     gauge.value = msg.data;
+                    gauge2.value = msg.data2;
                 }
 
                 x.push(parseFloat(msg.count));
@@ -208,6 +239,7 @@ $(document).ready(function() {
         <div id="tabs-3">
           <h2>Ciferníková vizualizácia</h2>
               <canvas id="canvasID"></canvas>
+              <canvas id="canvasID2"></canvas>
         </div>
     </div>
 
