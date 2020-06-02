@@ -8,8 +8,6 @@ import serial
 import ConfigParser
 import MySQLdb
 
-
-
 async_mode = None
 
 app = Flask(__name__)
@@ -34,15 +32,11 @@ def background_thread(args):
     i = 0
     dataCounter =0
     dataList = []
-
     while True:
         ser.write(str(int(9)))
         socketio.sleep(0.5)
-        
         count += 1
         dataCounter +=1
-        #dbV = dict(args).get('db_value')
-        #print dbV
         
         if dict(args).get('A') is not None:
             A = dict(args).get('A')
@@ -53,16 +47,12 @@ def background_thread(args):
         if A>0:
             
             if i==0 or i!=A:
-          #btnV = 'null'
-          #print A
-          #sliderV = 0
                 ser.write(str(A))
                 i=A
                 #print i
             t=time.time()
             read_ser=ser.readline()
             prem=read_ser.split(',')
-          #print(read_ser)
             dataDict = {
           "t": time.time(),
           "x": count,
@@ -71,18 +61,15 @@ def background_thread(args):
             dataList.append(dataDict)
         
             if len(dataList)>0:
-            
-            #print str(dataList)
+                #print str(dataList)
                 #print(count)
                 #print(prem[0])
                 #print(prem[1])
                 #print(A)
                 #print(dbV)
-            
                 socketio.emit('my_response',
                     {'data': prem[0], 'data2': prem[1], 'count': count, 'time': t},
                       namespace='/test')
-
 
 @app.route('/')
 def index():
